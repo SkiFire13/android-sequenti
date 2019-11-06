@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Solver Sequenti</string>
+    <string name="input_sequente_hint">Inserire un sequente o proposizione</string>
+    <string name="error_input">Input non valido</string>
+</resources>
