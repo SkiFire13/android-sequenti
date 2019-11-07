@@ -17,6 +17,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
 }
 
@@ -27,6 +30,9 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${ver.appcompat}"
     implementation "androidx.core:core-ktx:${ver.core}"
     implementation "androidx.constraintlayout:constraintlayout:${ver.constraintlayout}"
+    implementation "com.google.android.material:material:${ver.material}"
+
+    implementation "com.otaliastudios:zoomlayout:${ver.zoom}"
 
     testImplementation "junit:junit:${ver.junit}"
 

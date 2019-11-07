@@ -3,9 +3,7 @@ package com.skifire13.solversequenti.view
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import androidx.core.content.res.ResourcesCompat
 import com.skifire13.solversequenti.R
 import com.skifire13.solversequenti.solver.*
 import kotlin.math.max
@@ -20,7 +18,7 @@ class DerivazioneView(context: Context, attrs: AttributeSet) : View(context, att
 
     init {
         if(isInEditMode) // Debug
-            derivazione = parse("A & B |- B & A")?.derivazione()
+            derivazione = parse("(!B->G)&(G->!B)|-")?.derivazione()
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -45,6 +43,7 @@ class DerivazioneView(context: Context, attrs: AttributeSet) : View(context, att
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         derivazione?.draw(canvas, 0f + paddingLeft, 0f + paddingTop)
+
     }
 
     private fun Derivazione.draw(canvas: Canvas, x: Float, y: Float) {
@@ -80,8 +79,9 @@ class DerivazioneView(context: Context, attrs: AttributeSet) : View(context, att
                         x + measure.lineEnd + paddingLeftRegola,
                         y + measure.height - textHeight - paddingBottomLine + textHeight/2,
                         textPaint)
+
                     val heightDiff = albero.ramoSx.measure.height - albero.ramoDx.measure.height
-                    albero.ramoSx.draw(canvas, x + measure.ramoStart, y + if(heightDiff > 0) 0 else heightDiff)
+                    albero.ramoSx.draw(canvas, x + measure.ramoStart, y + if(heightDiff > 0) 0 else -heightDiff)
                     albero.ramoDx.draw(canvas, x + measure.ramoStart + albero.ramoSx.measure.width + paddingRami, y + if(heightDiff < 0) 0 else heightDiff)
                 }
             }
@@ -89,13 +89,12 @@ class DerivazioneView(context: Context, attrs: AttributeSet) : View(context, att
     }
 
     private fun Derivazione.measure(): Measure {
-        val seqWidth = textPaint.measureText(sequenteText).toInt()
-        val regolaWidth = textPaint.measureText(regolaText).toInt()
+        val seqWidth = textPaint.measureText(sequenteText + "\u2009").toInt()
+        val regolaWidth = textPaint.measureText(regolaText + "\u2009").toInt()
         val textHeight = textPaint.fontMetricsInt.let { it.descent - it.ascent }
 
         val bounds = Rect()
         textPaint.getTextBounds(regolaText, 0, regolaText.length, bounds)
-        Log.d("DerivazioneView", "calcolato: $regolaWidth, bound: ${bounds.width()}")
 
         val width: Int
         val height: Int
@@ -141,17 +140,14 @@ class DerivazioneView(context: Context, attrs: AttributeSet) : View(context, att
                     lineStart = 0
                     lineEnd = seqStart + seqWidth + paddingSideLine
                 } else {
-                    ramoStart = paddingSideLine
-
+                    val lineWidth = max(seqWidth, ramoMeasure.seqWidth) + 2 * paddingSideLine
                     val midRamoSeq = (ramoMeasure.seqEnd + ramoMeasure.seqStart)/2
-                    seqStart = midRamoSeq - seqWidth/2
-                    if(seqWidth > ramoMeasure.seqWidth) {
-                        lineStart = seqStart - paddingSideLine
-                        lineEnd = seqStart + seqWidth + paddingSideLine
-                    } else {
-                        lineStart = ramoMeasure.seqStart - paddingSideLine
-                        lineEnd = ramoMeasure.seqEnd + paddingSideLine
-                    }
+
+                    ramoStart = max(0, lineWidth/2 - midRamoSeq)
+                    seqStart = ramoStart + midRamoSeq - seqWidth / 2
+
+                    lineStart = ramoStart + midRamoSeq - lineWidth / 2
+                    lineEnd = lineStart + lineWidth
                 }
                 seqEnd = seqStart + seqWidth
                 width = max(baseWidth, lineEnd + paddingLeftRegola + regolaWidth)

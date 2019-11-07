@@ -15,7 +15,7 @@ data class Sequente(
         builder.append('⊢')
         if(propsDx.isNotEmpty()) {
             builder.append(' ')
-            propsDx.joinTo(builder, separator = ", ")
+            propsDx.asReversed().joinTo(builder, separator = ", ")
         }
         return builder.toString()
     }
