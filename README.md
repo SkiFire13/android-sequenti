@@ -66,10 +66,6 @@ Esempi:
  - `|-` è il sequente vuoto ed è accettato
  - `A & B` equivale al sequente `|- A & B`
 
-# Bugs
- - Una derivazione troppo lunga o larga si estenderà oltre i bordi dello schermo e non sarà possibile scrollare per vederla completamente. Si pianifica in futuro di rendere lo scroll 2D possibile
- - La parte più a destra della derivazione (solitamente una regola) viene in parte tagliata
-
 # Immagine di esempio:
 
 ![Immagine di esempio](./example-output.jpg)
